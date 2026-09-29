@@ -1,4 +1,4 @@
-package com.bootcamp.biopark.infraestructure.out.entity;
+package com.bootcamp.biopark.infraestructure.entity;
 
 import jakarta.persistence.*;
 
