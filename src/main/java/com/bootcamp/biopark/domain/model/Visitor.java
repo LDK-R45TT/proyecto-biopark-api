@@ -4,16 +4,16 @@ package com.bootcamp.biopark.domain.model;
 public class Visitor {
     private final Long id;
     private final String name;
-    private final String surname;
     private final String lastname;
+    private final String dni;
     private final Integer age;
 
 
-    public Visitor(Long id, String name, String surname, String lastname, Integer age) {
+    public Visitor(Long id, String name, String lastname, String dni, Integer age) {
         this.id = id;
         this.name = name;
-        this.surname = surname;
         this.lastname = lastname;
+        this.dni = dni;
         this.age = age;
     }
 
@@ -25,9 +25,6 @@ public class Visitor {
         return id;
     }
 
-    public String getSurname() {
-        return surname;
-    }
 
     public String getLastname() {
         return lastname;
@@ -36,13 +33,15 @@ public class Visitor {
     public Integer getAge() {
         return age;
     }
+    public String getDni() {
+        return dni;
+    }
 
     @Override
     public String toString() {
         return "Visitor{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", age=" + age +
                 '}';
