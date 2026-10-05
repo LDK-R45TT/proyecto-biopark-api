@@ -16,7 +16,7 @@ public class EnvironmentEntity {
     String name;
     String description;
     @OneToMany(mappedBy = "environment", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    Set<String> tickets = new HashSet<>();
+    Set<TicketEntity> tickets = new HashSet<>();
     public EnvironmentEntity() {
     }
 
