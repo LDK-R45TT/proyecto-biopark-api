@@ -2,7 +2,9 @@ package com.bootcamp.biopark.infraestructure.out.mapper;
 
 import com.bootcamp.biopark.domain.model.Visitor;
 import com.bootcamp.biopark.infraestructure.entity.VisitorEntity;
+import org.springframework.stereotype.Component;
 
+@Component
 public class VisitorPersistenceMapper {
 
     public VisitorEntity toEntity(Visitor model){

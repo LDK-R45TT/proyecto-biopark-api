@@ -50,4 +50,11 @@ public class VisitorPersistenceAdapter implements VisitorRepositoryPort {
                 .map(mapper::toModel)
                 .toList();
     }
+
+    @Override
+    public Optional<Visitor> findByDni(String dni) {
+        Optional<VisitorEntity> visitorFound = repository.findByDni(dni);
+        return visitorFound.map(mapper::toModel);
+
+    }
 }
