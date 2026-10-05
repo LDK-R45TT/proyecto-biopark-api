@@ -18,6 +18,7 @@ public final class EnvironmentWebMapper {
                 request.description()
         );
     }
+    //convierte a response
     public static EnvironmentResponseDto toResponse(Environment model) {
         return new EnvironmentResponseDto(
                 model.getId(),

@@ -29,4 +29,13 @@ public class Environment {
     public String getDescription() {
         return description;
     }
+
+    @Override
+    public String toString() {
+        return "Environment{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
