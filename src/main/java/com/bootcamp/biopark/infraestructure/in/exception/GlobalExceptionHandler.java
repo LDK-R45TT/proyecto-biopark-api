@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
 
     /*exception customer no encontrado*/
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(ResourceNotFoundException ex){
+    public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex){
         ErrorResponse err = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 ex.getMessage(),
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
 
     /*exception deletion customer*/
     @ExceptionHandler(ResourceDeletionNotAllowedException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(ResourceDeletionNotAllowedException ex){
+    public ResponseEntity<ErrorResponse> handleDeletionConflict(ResourceDeletionNotAllowedException ex){
         ErrorResponse err = new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
                 ex.getMessage(),
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
 
     /*exception duplicated customer*/
     @ExceptionHandler(ResourceDuplicatedException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(ResourceDuplicatedException ex){
+    public ResponseEntity<ErrorResponse> handleDuplicateConflict(ResourceDuplicatedException ex){
         ErrorResponse err = new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
                 ex.getMessage(),
