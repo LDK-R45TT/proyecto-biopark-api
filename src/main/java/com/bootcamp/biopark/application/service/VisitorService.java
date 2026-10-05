@@ -1,4 +1,4 @@
-package com.bootcamp.biopark.application;
+package com.bootcamp.biopark.application.service;
 
 import com.bootcamp.biopark.application.port.in.CreateVisitorUseCase;
 import com.bootcamp.biopark.application.port.in.GetVisitorUseCase;
