@@ -6,9 +6,11 @@ import com.bootcamp.biopark.application.port.in.RateCommand;
 import com.bootcamp.biopark.application.port.out.RateRepositoryPort;
 import com.bootcamp.biopark.domain.model.Rate;
 import com.bootcamp.biopark.infraestructure.in.exception.ResourceNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class RateService implements CreateRateUseCase, GetRateUseCase {
 
     private final RateRepositoryPort repository;
