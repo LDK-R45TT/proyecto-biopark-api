@@ -15,5 +15,7 @@ public interface VisitorRepositoryPort {
 
     List<Visitor> findAll();
 
+    Optional<Visitor> findByDni(String dni);
+
     List<Visitor> findBySurnameIgnoreCase(String surname);
 }

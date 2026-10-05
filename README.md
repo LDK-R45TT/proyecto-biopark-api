@@ -1,30 +1,111 @@
+# :trophy: CUSTOMER API: Visitors Usecase
 
-# :trophy: BIOPARK API
+
+En esta entrega se implementó la lógica de negocio y la estructura base para la entidad Visitors, aplicando los principios de Arquitectura Hexagonal.
 
 
-Los bioparques modernos han evolucionado de ser simples espacios cerrados de conservación animal a centros de exhibición biológica enfocados en la experiencia del visitante. Esta apertura al público no solo promueve la educación ambiental, sino que constituye el pilar económico fundamental para la recaudación de fondos y venta de tickets destinados a la manutención integral del parque.
+## 🧩 Estructura de Carpetas - Visitors
 
-- **Tarifas Rigidas:** Incapacidad para ajustar dinámicamente las tarifas de los tickets según la demanda, el tipo de visitante o las restricciones operativas de los entornos en un momento dado, limitando el potencial de recaudación para la manutención del parque.
-- **Ineficiencia en control de aforos:** la operación comercial (venta de boletos,  flujos de caja).
-- **Riesgo Operativo y Logístico:** Falta de trazabilidad en la asignación de personal calificado (empleados, supervisores) a hábitats específicos, lo que puede derivar en negligencias.
 
-## 💡 Propuesta de Solución
+```tree /F
+main                                                              
+├─ java                                                           
+│  └─ com                                                         
+│     └─ bootcamp                                                 
+│        └─ biopark                                               
+│           ├─ application                                        
+│           │  └─ port                                            
+│           │     ├─ in                                           
+│           │     │  ├─ shared                                    
+│           │     │  │  └─ BaseResponse.java                      
+│           │     │  ├─ CreateVisitorUseCase.java                 
+│           │     │  ├─ GetVisitorUseCase.java                    
+│           │     │  ├─ SearchVisitorUseCase.java                 
+│           │     │  └─ VisitorCommand.java                       
+│           │     └─ out                                          
+│           │        └─ VisitorRepositoryPort.java                
+│           ├─ domain                                             
+│           │  └─ model                                           
+│           │     └─ Visitor.java                                 
+│           ├─ infraestructure                                    
+│           │  ├─ entity                                          
+│           │  │  └─ VisitorEntity.java                           
+│           │  ├─ in                                              
+│           │  │  ├─ controller                                   
+│           │  │  │  └─ VisitorController.java                    
+│           │  │  ├─ dto                                          
+│           │  │  │  ├─ request                                   
+│           │  │  │  │  └─ VisitorRequestDto.java                 
+│           │  │  │  └─ response                                  
+│           │  │  │     └─ VisitorResponseDto.java                
+│           │  │  ├─ exception                                    
+│           │  │  │  ├─ GlobalExceptionHandler.java               
+│           │  │  │  ├─ ResourceAlreadyExistsException.java       
+│           │  │  │  ├─ ResourceDeletionNotAllowedException.java  
+│           │  │  │  ├─ ResourceDuplicatedException.java          
+│           │  │  │  └─ ResourceNotFoundException.java            
+│           │  │  ├─ mapper                                       
+│           │  │  │  └─ VisitorWebMapper.java                     
+│           │  │  └─ shared                                       
+│           │  │     └─ ErrorResponse.java                        
+│           │  └─ out                                             
+│           │     ├─ adapter                                      
+│           │     │  └─ VisitorPersistenceAdapter.java            
+│           │     ├─ mapper                                       
+│           │     │  └─ VisitorPersistenceMapper.java             
+│           │     └─ repository                                   
+│           │        └─ VisitorJpaRepository.java                 
+│           └─ BioparkApplication.java                            
+└─ resources                                                      
+   ├─ static                                                      
+   ├─ templates                                                   
+   └─ application.properties        
+```
 
-Desarrollar una **API REST robusta, escalable y modular** que cumpla con las necesidades del proyecto:
+🧱 Implementaciones
 
-[![Diagrama EDR](assets/edr_parque.png)](assets/edr_parque.png)
+✅ Domain:
 
-## 🚀 Modelo de Entidades (Módulo Comercial)
+- **`Visitor.java`**: Modelo de dominio puro que representa la entidad del visitante con sus atributos y reglas de negocio asociadas.
 
-- __visitors (Visitantes):__ Registro centralizado de los datos demográficos y de contacto de los clientes.
-- __rates (Tarifas):__ Matriz de precios configurables basada en categorías de acceso (Bronce, Plata, Oro, Diamante) y temporadas.
-- __payments (Pagos):__ Registro auditable de las transacciones financieras (monto, método de pago, estado de la transacción, comprobante).
-- __tickets (Entradas):__ Credenciales digitales únicas asociadas a un visitante que validan su derecho de ingreso y controlan el aforo.
-- __environments (Entornos/Atracciones):__ Catálogo de los hábitats o áreas físicas del bioparque (ej. Selva Tropical, Aviario de Madagascar) que reciben público.
+✅ Application:
 
-## 🔗 Relaciones entre Entidades (Derivadas del Diagrama)
+- **Puertos de Entrada (`port.in`)**: Interfaces que definen las acciones que el mundo exterior puede ejecutar en el sistema (Casos de Uso):
+    - **`CreateVisitorUseCase.java`**: Contrato para la creación de un nuevo visitante.
+    - **`GetVisitorUseCase.java`**: Contrato para obtener un visitante por un identificador.
+    - **`SearchVisitorUseCase.java`**: Contrato para la búsqueda avanzada de visitantes.
+    - **`VisitorCommand.java`**: Objeto de transferencia de datos interno usado para orquestar los comandos hacia los casos de uso.
+    - **`shared/BaseResponse.java`**: Estructura estandarizada para el manejo de respuestas del sistema.
+- **Puertos de Salida (`port.out`)**:
+    - **`VisitorRepositoryPort.java`**: Interfaz que define las operaciones de persistencia que la aplicación necesita (abstracción del repositorio), cumpliendo con la inversión de dependencias.
 
-- __visitors-payments (Uno a Muchos):__ Un visitante puede realizar múltiples transacciones financieras a lo largo del tiempo, pero cada pago pertenece estrictamente a un único visitante.
-- __payments-tickets (Uno a Muchos):__ Una sola transacción de pago puede liquidar la compra de una o varias entradas (ej. una compra familiar).
-- __rates-tickets (Uno a Muchos):__ Una tarifa específica se aplica a múltiples entradas emitidas, pero cada entrada está regida por una sola estructura de precios.
-- __environments-tickets ( Uno a Muchos ):__ Si un ticket da acceso a una atracción específica, la relación es de muchos tickets a un entorno.
+✅ Infrastructure:
+
+- **Adaptadores de Entrada (`in/controller` e `in/dto`)**:
+    - **`VisitorController.java`**: Controlador REST que expone los endpoints HTTP para interactuar con la entidad.
+    - **`dto/request/...`**: Objetos que reciben y validan los datos crudos enviados por el cliente antes de transformarlos en comandos internos.
+- **Persistencia (`entity`)**:
+    - **`VisitorEntity.java`**: Entidad de persistencia mapeada para la base de datos (por ejemplo, mediante JPA/Hibernate), separando el almacenamiento físico del modelo de dominio.
+
+
+---
+
+## 🔌 Rutas Implementadas:
+
+__URL BASE:__ http://localhost:8080/api/v1/
+
+| <center>Método HTTP</center> | <center>Ruta</center>      | <center>Descripción</center>                     | <center>Status</center> |
+| ---------------------------- | -------------------------- | ------------------------------------------------ | ----------------------- |
+| **`GET`**                    | `/visitor/all`             | Obtiene lista completa de visitantes             | `200 OK`                |
+| **`GET`**                    | `/visitor/{id}`            | Busca un visitante específico por su ID único    | `200 OK`                |
+| **`GET`**                    | `/visitor/por-nombre`      | Filtra y obtiene un visitante buscado por nombre | `302 FOUND`             |
+| **`POST`**                   | `/visitor/`                | Registra un nuevo visitante en el sistema        | `201 CREATED`           |
+| **`POST`**                   | `/visitor/all`             | Registra un grupo de visitantes en el sistema    | `201 CREATED`           |
+| **`PUT`**                    | `/visitor/actualizar/{id}` | Actualiza un visitante por su ID                 | `200 OK`                |
+| **`DELETE`**                 | `/visitor/delete/{id}`     | Elimina un visitante del sistema por su ID       | `200 OK`                |
+| **`DELETE`**                 | `/VISITOR/delete-all`      | Elimina todos los visitantes                     | `200 OK`                |
+
+## 📆 Branch utilizado
+
+> Todos estos cambios se encuentran en la rama `ref-visitors-usecase` del repositorio:  
+**[LDK-R45TT / proyecto-biopark-api (Branch: ref-visitors-usecase)](https://github.com/LDK-R45TT/proyecto-biopark-api/commits/ref-visitors-usecase)**
