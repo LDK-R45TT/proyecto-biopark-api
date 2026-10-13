@@ -34,11 +34,11 @@ public class SecurityErrorHandler implements AuthenticationEntryPoint, AccessDen
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-
+        write(response, HttpStatus.UNAUTHORIZED, "Unauthorized");
     }
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, org.springframework.security.access.AccessDeniedException accessDeniedException) throws IOException, ServletException {
-
+        write(response, HttpStatus.FORBIDDEN, "Forbidden");
     }
 }
