@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface VisitorRepositoryPort {
     //operaciones iniciales
     Visitor save(Visitor product);
+    //guarda todos
+    List<Visitor> saveAll(List<Visitor> visitorList);
 
     Optional<Visitor> findById(Long id);
 
@@ -17,5 +19,8 @@ public interface VisitorRepositoryPort {
 
     Optional<Visitor> findByDni(String dni);
 
-    List<Visitor> findBySurnameIgnoreCase(String surname);
+    List<Visitor> filterBySurnameIgnoreCase(String surname);
+
+    void deleteById(Long visitorId);
+    void deleteAll();
 }

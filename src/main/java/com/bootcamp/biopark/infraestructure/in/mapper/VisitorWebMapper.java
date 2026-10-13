@@ -16,7 +16,7 @@ public final class VisitorWebMapper {
     public static VisitorCommand toCommand(VisitorRequestDto request) {
         return new VisitorCommand(
                 request.name(),
-                request.lastName(),
+                request.lastname(),
                 request.dni(),
                 request.age()
         );

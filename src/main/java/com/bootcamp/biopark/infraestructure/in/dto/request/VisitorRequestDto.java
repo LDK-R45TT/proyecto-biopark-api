@@ -9,7 +9,7 @@ public  record VisitorRequestDto(
         String name,
         @NotBlank(message = "El apellido es obligatorio")
         @Size(max = 50, message = "El apellido no puede superar los 50 caracteres")
-        String lastName,
+        String lastname,
         @NotBlank(message = "El DNI es obligatorio")
         @Size(min = 8, max = 8, message = "El DNI debe tener exactamente 8 dígitos")
         @Pattern(regexp = "^[0-9]+$", message = "El DNI debe contener solo números")
