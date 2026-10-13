@@ -30,7 +30,6 @@ public class SecurityConfig {
                         authorize //rutas publicas primero
                                 .requestMatchers("/api/v1/auth/**", "/error").permitAll()
                                 // rutas con acceso protegido
-                                .requestMatchers(HttpMethod.GET, "/api/v1/visitors/**").hasAnyRole("ADMIN", "USER")
                                 .requestMatchers("/api/v1/visitors/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/api/v1/environment/**").hasAnyRole("ADMIN", "USER")
                                 .requestMatchers("/api/v1/environment/**").hasRole("ADMIN")
