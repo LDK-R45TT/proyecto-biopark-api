@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (JwtException | IllegalArgumentException | UsernameNotFoundException e) {
-            // Invalid token or unknown user: continue unauthenticated and the chain answers 401.
+            // token expiró, está mal firmado o el usuario no existe (unauthorized-401)
         }
     }
 }

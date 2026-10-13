@@ -62,4 +62,24 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.CONFLICT).body(err);
     }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleAlreadyExistsConflict(ResourceAlreadyExistsException ex){
+        ErrorResponse err = new ErrorResponse(
+                HttpStatus.CONFLICT.value(), ex.getMessage(), LocalDateTime.now(), null
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(err);
+    }
+
+    /*invalid credentials exception*/
+    @ExceptionHandler(InvalidAuthCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCredential(InvalidAuthCredentialsException ex){
+        ErrorResponse err = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                ex.getMessage(),
+                LocalDateTime.now(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(err);
+    }
 }

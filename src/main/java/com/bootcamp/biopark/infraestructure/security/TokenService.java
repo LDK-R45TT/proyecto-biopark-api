@@ -23,9 +23,9 @@ public class TokenService {
 
     public TokenService(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.expiration-seconds}") long expirationMinutes) {
+            @Value("${jwt.expiration-seconds}") long expirationSeconds) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        this.expiration = Duration.ofMinutes(expirationMinutes);
+        this.expiration = Duration.ofSeconds(expirationSeconds);
     }
 
     public String generateToken(UserDetails user) {
@@ -41,14 +41,18 @@ public class TokenService {
     }
 
     public String extractUsername(String token) {
-        return claims(token).getSubject();
+        try {
+            return claims(token).getSubject();
+        } catch (JwtException | IllegalArgumentException e) {
+            return null; // si el token expiró aquí, devolvemos null de forma segura
+        }
     }
 
     public boolean isValid(String token, UserDetails user) {
         try {
             return extractUsername(token).equals(user.getUsername());
         } catch (JwtException | IllegalArgumentException e) {
-            throw new BadCredentialsException("credenciales incorrectas!");
+            return false;
         }
     }
 

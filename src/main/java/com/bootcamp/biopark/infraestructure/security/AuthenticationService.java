@@ -28,7 +28,7 @@ public class AuthenticationService {
 
     public String register(String name, String email, String rawPassword) {
         if (users.existsByEmail(email)) {
-            throw new ResourceAlreadyExistsException(email);
+            throw new ResourceAlreadyExistsException("El correo electrónico '" + email + "' ya se encuentra registrado.");
         }
         User saved = users.save(User.register(name, email, passwordEncoder.encode(rawPassword)));
         return tokenService.generateToken(SecurityUser.toSecurityUserFromDomain(saved));
