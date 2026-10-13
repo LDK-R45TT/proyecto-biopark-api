@@ -8,5 +8,4 @@ public interface GetVisitorUseCase {
 
     Visitor findById(Long id);
     List<Visitor> findAll();
-
 }

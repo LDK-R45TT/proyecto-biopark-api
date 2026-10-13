@@ -1,9 +1,6 @@
-package com.bootcamp.biopark.application;
+package com.bootcamp.biopark.application.service;
 
-import com.bootcamp.biopark.application.port.in.CreateVisitorUseCase;
-import com.bootcamp.biopark.application.port.in.GetVisitorUseCase;
-import com.bootcamp.biopark.application.port.in.SearchVisitorUseCase;
-import com.bootcamp.biopark.application.port.in.VisitorCommand;
+import com.bootcamp.biopark.application.port.in.*;
 import com.bootcamp.biopark.application.port.out.VisitorRepositoryPort;
 import com.bootcamp.biopark.domain.model.Visitor;
 import com.bootcamp.biopark.infraestructure.in.exception.ResourceDuplicatedException;
@@ -14,14 +11,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class VisitorService implements CreateVisitorUseCase, GetVisitorUseCase, SearchVisitorUseCase {
+public class VisitorService implements CreateVisitorUseCase, GetVisitorUseCase, SearchVisitorUseCase, DeleteVisitorUseCase {
 
     private final VisitorRepositoryPort repository;
-    private final VisitorPersistenceMapper mapper;
-    public VisitorService(VisitorRepositoryPort repository, VisitorPersistenceMapper mapper) {
+
+    public VisitorService(VisitorRepositoryPort repository) {
         this.repository = repository;
-        this.mapper = mapper;
     }
+
 
     @Override
     public Visitor create(VisitorCommand command) {
@@ -31,6 +28,11 @@ public class VisitorService implements CreateVisitorUseCase, GetVisitorUseCase, 
         Visitor visitor = new Visitor(null, command.name(), command.surname(), command.dni(), command.age());
 
         return repository.save(visitor);
+    }
+
+    @Override
+    public List<Visitor> createAll(List<VisitorCommand> command) {
+        return command.stream().map(this::create).toList();
     }
 
     @Override
@@ -51,8 +53,18 @@ public class VisitorService implements CreateVisitorUseCase, GetVisitorUseCase, 
         return visitorFound;
     }
     @Override
-    public List<Visitor> findBySurname(String surname) {
-        return repository.findBySurnameIgnoreCase(surname);
+    public List<Visitor> filterBySurname(String surname) {
+        return repository.filterBySurnameIgnoreCase(surname);
+    }
+
+    @Override
+    public void deleteById(Long idVisitor) {
+        repository.deleteById(idVisitor);
+    }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
     }
 }
 

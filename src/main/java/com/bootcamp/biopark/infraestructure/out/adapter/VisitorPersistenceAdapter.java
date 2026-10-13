@@ -29,6 +29,12 @@ public class VisitorPersistenceAdapter implements VisitorRepositoryPort {
     }
 
     @Override
+    public List<Visitor> saveAll(List<Visitor> visitorList) {
+        List<VisitorEntity> visitors = repository.saveAll(visitorList.stream().map(mapper::toEntity).toList());
+        return visitors.stream().map(mapper::toModel).toList();
+    }
+
+    @Override
     public Optional<Visitor> findById(Long id) {
         // Si no existe, esto revienta con NoSuchElementException -> HTTP 500 generico
 
@@ -45,16 +51,28 @@ public class VisitorPersistenceAdapter implements VisitorRepositoryPort {
     }
 
     @Override
-    public List<Visitor> findBySurnameIgnoreCase(String surname) {
+    public List<Visitor> filterBySurnameIgnoreCase(String surname) {
         return repository.findBySurnameIgnoreCase(surname).stream()
                 .map(mapper::toModel)
                 .toList();
     }
+
+
 
     @Override
     public Optional<Visitor> findByDni(String dni) {
         Optional<VisitorEntity> visitorFound = repository.findByDni(dni);
         return visitorFound.map(mapper::toModel);
 
+    }
+
+    @Override
+    public void deleteById(Long visitorId) {
+        repository.deleteById(visitorId);
+    }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
     }
 }

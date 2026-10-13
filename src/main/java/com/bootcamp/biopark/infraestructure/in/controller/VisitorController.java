@@ -1,6 +1,7 @@
 package com.bootcamp.biopark.infraestructure.in.controller;
 
 import com.bootcamp.biopark.application.port.in.CreateVisitorUseCase;
+import com.bootcamp.biopark.application.port.in.DeleteVisitorUseCase;
 import com.bootcamp.biopark.application.port.in.GetVisitorUseCase;
 import com.bootcamp.biopark.application.port.in.SearchVisitorUseCase;
 import com.bootcamp.biopark.application.port.in.shared.BaseResponse;
@@ -22,11 +23,12 @@ public class VisitorController {
     private final CreateVisitorUseCase createVisitorUseCase;
     private final GetVisitorUseCase getVisitorUseCase;
     private final SearchVisitorUseCase searchVisitorUseCase;
-
-    public VisitorController(CreateVisitorUseCase createVisitorUseCase, GetVisitorUseCase getVisitorUseCase, SearchVisitorUseCase searchVisitorUseCase) {
+    private final DeleteVisitorUseCase deleteVisitorUseCase;
+    public VisitorController(CreateVisitorUseCase createVisitorUseCase, GetVisitorUseCase getVisitorUseCase, SearchVisitorUseCase searchVisitorUseCase, DeleteVisitorUseCase deleteVisitorUseCase) {
         this.createVisitorUseCase = createVisitorUseCase;
         this.getVisitorUseCase = getVisitorUseCase;
         this.searchVisitorUseCase = searchVisitorUseCase;
+        this.deleteVisitorUseCase = deleteVisitorUseCase;
     }
 
     //1-obtener todos
@@ -36,7 +38,6 @@ public class VisitorController {
                 .map(VisitorWebMapper::toResponse).toList();
         return ResponseEntity.ok(BaseResponse.success(response));
     }
-
 
     //2-obtener por id
     @GetMapping("/{id}")
@@ -48,7 +49,7 @@ public class VisitorController {
     //3-obtener por nombre
     @GetMapping("/por-nombre")
     public ResponseEntity<BaseResponse<List<VisitorResponseDto>>> getByName(@RequestParam String name){
-        List<VisitorResponseDto> response = searchVisitorUseCase.findBySurname(name)
+        List<VisitorResponseDto> response = searchVisitorUseCase.filterBySurname(name)
                 .stream().map(VisitorWebMapper::toResponse).toList();
         return  ResponseEntity.status(HttpStatus.FOUND).body(BaseResponse.success("visitante filtrado", response));
     }
@@ -58,10 +59,32 @@ public class VisitorController {
         Visitor visitor = createVisitorUseCase.create(VisitorWebMapper.toCommand(request));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse
-                .success("visitante filtrado", VisitorWebMapper.toResponse(visitor)));
+                .created("visitante creado", VisitorWebMapper.toResponse(visitor)));
     }
+    //5-crear todos
+    @PostMapping("/all")
+    public ResponseEntity<BaseResponse<List<VisitorResponseDto>>> insertAll(@Valid @RequestBody List<VisitorRequestDto> request){
 
-
-
+        List<Visitor> visitors = createVisitorUseCase.createAll(request.stream().map(VisitorWebMapper::toCommand).toList());
+        List<VisitorResponseDto> responseData = visitors.stream()
+                .map(VisitorWebMapper::toResponse)
+                .toList();
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(BaseResponse.created("listado creado", responseData));
+    }
+    //6-eliminar por id
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<BaseResponse<?>> deleteById(@PathVariable Long id){
+        deleteVisitorUseCase.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(BaseResponse.success("visitante eliminado!", null));
+    }
+    //7-eliminar todos
+    @DeleteMapping("/delete/all")
+    public ResponseEntity<BaseResponse<?>> deleteAll(){
+        deleteVisitorUseCase.deleteAll();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(BaseResponse.success("eliminados todos!", null));
+    }
 
 }
