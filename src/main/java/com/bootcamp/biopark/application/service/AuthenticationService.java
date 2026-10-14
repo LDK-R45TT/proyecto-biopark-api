@@ -1,49 +1,47 @@
 package com.bootcamp.biopark.application.service;
 
+import com.bootcamp.biopark.application.port.in.LoginUseCase;
+import com.bootcamp.biopark.application.port.in.RegisterUseCase;
+import com.bootcamp.biopark.application.port.in.UserCommand;
+import com.bootcamp.biopark.application.port.out.PasswordHashPort;
+import com.bootcamp.biopark.application.port.out.TokenGeneratorPort;
+import com.bootcamp.biopark.application.port.out.UserAuthenticatorPort;
 import com.bootcamp.biopark.application.port.out.UserSessionRepositoryPort;
+import com.bootcamp.biopark.domain.model.AuthenticatedUser;
 import com.bootcamp.biopark.domain.model.User;
-import com.bootcamp.biopark.infraestructure.in.exception.InvalidAuthCredentialsException;
 import com.bootcamp.biopark.infraestructure.in.exception.ResourceAlreadyExistsException;
-import com.bootcamp.biopark.infraestructure.security.SecurityUser;
-import com.bootcamp.biopark.infraestructure.security.service.TokenService;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthenticationService {
+public class AuthenticationService implements RegisterUseCase, LoginUseCase {
+
     private final UserSessionRepositoryPort users;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
-    private final TokenService tokenService;
+    private final PasswordHashPort passwordHashPort;//interfaz hasher
+    private final UserAuthenticatorPort userAuthenticatorPort;
+    private final TokenGeneratorPort tokenGeneratorPort;
 
-    public AuthenticationService(UserSessionRepositoryPort users, PasswordEncoder passwordEncoder,
-                                 AuthenticationManager authenticationManager, TokenService tokenService) {
+    public AuthenticationService(UserSessionRepositoryPort users, PasswordHashPort passwordHashPort, UserAuthenticatorPort userAuthenticatorPort, TokenGeneratorPort tokenGeneratorPort) {
         this.users = users;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
-        this.tokenService = tokenService;
+        this.passwordHashPort = passwordHashPort;
+        this.userAuthenticatorPort = userAuthenticatorPort;
+        this.tokenGeneratorPort = tokenGeneratorPort;
     }
 
-    public String register(String name, String email, String rawPassword) {
-        if (users.existsByEmail(email)) {
-            throw new ResourceAlreadyExistsException("El correo electrónico '" + email + "' ya se encuentra registrado.");
+
+    @Override
+    public String register(UserCommand command) {
+        if (users.existsByEmail(command.email())) {
+            throw new ResourceAlreadyExistsException(command.email());
         }
-        User saved = users.save(User.register(name, email, passwordEncoder.encode(rawPassword)));
-        return tokenService.generateToken(SecurityUser.toSecurityUserFromDomain(saved));
+        User saved = users.save(User.register(command.name(), command.email(), passwordHashPort.hash(command.password())));
+        return tokenGeneratorPort.generate(saved.getEmail(), saved.getRole());
     }
 
-    public String login(String email, String rawPassword) {
-        try {
-            var auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(email, rawPassword));
-            return tokenService.generateToken((UserDetails) auth.getPrincipal());
-        }catch (AuthenticationException e) {
-            throw new InvalidAuthCredentialsException("El usuario o la contraseña no coinciden");
-        }
+    @Override
+    public String login(String email, String pass) {
+        // Si las credenciales están mal, el adaptador lanza la exception
+        AuthenticatedUser user = userAuthenticatorPort.authenticate(email, pass);
+        // si pasa, devuelve el token
+        return tokenGeneratorPort.generate(email, user.role());
     }
-
 }
