@@ -15,7 +15,7 @@ public class JwtTokenIssuer implements TokenGeneratorPort {
     public JwtTokenIssuer(TokenService tokenService) {
         this.tokenService = tokenService;
     }
-
+    //genera el token al obtener credenciales
     @Override
     public String generate(String email, Role role) {
         UserDetails securityUser = new SecurityUser(null, email, "", role);
