@@ -12,6 +12,7 @@ public class EnvironmentPersistenceMapper {
         EnvironmentEntity entity = new EnvironmentEntity();
         entity.setName(model.getName());
         entity.setDescription(model.getDescription());
+        entity.setActive(model.getActive());
         return entity;
     }
 
@@ -19,8 +20,8 @@ public class EnvironmentPersistenceMapper {
         return new Environment(
                 entity.getEnvironmentId(),
                 entity.getName(),
-                entity.getDescription()
-        );
+                entity.getDescription(),
+                entity.getActive());
     }
 
 }

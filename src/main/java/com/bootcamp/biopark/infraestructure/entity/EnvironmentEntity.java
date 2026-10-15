@@ -12,9 +12,11 @@ public class EnvironmentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    Long environmentId;
-    String name;
-    String description;
+    private Long environmentId;
+    private String name;
+    private String description;
+    @Column(name = "active", nullable = false)
+    private Boolean active = true;
     @OneToMany(mappedBy = "environment", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     Set<TicketEntity> tickets = new HashSet<>();
     public EnvironmentEntity() {
@@ -48,6 +50,14 @@ public class EnvironmentEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }
 

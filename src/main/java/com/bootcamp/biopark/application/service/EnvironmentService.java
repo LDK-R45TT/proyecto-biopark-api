@@ -21,7 +21,7 @@ public class EnvironmentService implements CreateEnvironmentUseCase, GetEnvironm
 
     @Override
     public Environment create(EnvironmentCommand command) {
-        Environment env = new Environment(null, command.name(), command.description());
+        Environment env = new Environment(null, command.name(), command.description(), true);
         return repository.save(env);
 
     }

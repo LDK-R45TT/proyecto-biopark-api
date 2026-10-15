@@ -19,12 +19,12 @@ INSERT INTO visitors (nombre, apellido, dni, edad) VALUES
 ('Lautaro', 'Tozonni', '27123987', 45);
 
 -- ENVIRONMENTS
-INSERT INTO environments (name, description) VALUES
-('Fosa De Reptiles','Tanques de lodo industrializados y cámaras especiales que resguardan cocodrilos e iguanas.' ),
-('Estación Arácnida', 'Laboratorio microclimatizado hermético para tarántulas y escorpiones emperador...'),
-('Bahía Delfín', 'Gran piscina conectada a compuertas hidráulicas para delfines y orcas.'),
-('Cueva del Pulpo', 'Tanque de luz tenue adaptado para pulpos gigantes y calamares.'),
-('Jaula de Vuelo', 'Aviario gigante de malla reforzada para contemplar tucanes y aves exoticas.');
+INSERT INTO environments (name, description, active) VALUES
+('Fosa De Reptiles','Tanques de lodo industrializados y cámaras especiales que resguardan cocodrilos e iguanas.', true ),
+('Estación Arácnida', 'Laboratorio microclimatizado hermético para tarántulas y escorpiones emperador...', true),
+('Bahía Delfín', 'Gran piscina conectada a compuertas hidráulicas para delfines y orcas.', true),
+('Cueva del Pulpo', 'Tanque de luz tenue adaptado para pulpos gigantes y calamares.', true),
+('Jaula de Vuelo', 'Aviario gigante de malla reforzada para contemplar tucanes y aves exoticas.', true);
 
 -- RATES
 INSERT INTO rates (nombre, precio, descripcion) VALUES
@@ -33,7 +33,7 @@ INSERT INTO rates (nombre, precio, descripcion) VALUES
 ('Pase Operativo Base', 10.00,'Ingreso regular por fila general. Permite la visualización del espécimen a través de los blindajes perimetrales del sector seleccionado.');
 
 -- TICKETS
-INSERT INTO tickets (visitor_id_fk, ticket_active, rate_id_fk, environment_id_fk) VALUES
+/*INSERT INTO tickets (visitor_id_fk, ticket_active, rate_id_fk, environment_id_fk) VALUES
 (1, 1, 2, 1),
 (2, 1, 1, 3),
 (3, 1, 3, 2),
@@ -41,4 +41,4 @@ INSERT INTO tickets (visitor_id_fk, ticket_active, rate_id_fk, environment_id_fk
 (5, 1, 3, 4),
 (6, 1, 1, 1),
 (7, 0, 3, 3),
-(8, 0, 1, 5);
+(8, 0, 1, 5);*/
